@@ -1,6 +1,6 @@
 import os
 
-def nova_request(self, url_detail):
+def nova_get_request(self, url_detail):
     url = self.get_endpoint('compute')
     if url_detail:
         url = os.path.join(url, url_detail)
@@ -11,22 +11,23 @@ def nova_request(self, url_detail):
     self.output("Response status code: %s" % response.status_code)
     #self.output("Response content: %s" % response.content)
 
-
 def list_servers(self):
-    nova_request(self, 'servers')
-
+    nova_get_request(self, 'servers')
 
 def list_servers_detail(self):
-    nova_request(self, 'servers/detail')
-
+    nova_get_request(self, 'servers/detail')
 
 def list_flavors(self):
-    nova_request(self, 'flavors')
-
+    nova_get_request(self, 'flavors')
 
 def list_flavors_detail(self):
-    nova_request(self, 'flavors/detail')
-
+    nova_get_request(self, 'flavors/detail')
 
 def list_limits(self):
-    nova_request(self, 'limits')
+    nova_get_request(self, 'limits')
+
+def list_images(self):
+    nova_get_request(self, 'images')
+
+def list_images_detail(self):
+    nova_get_request(self, 'images/detail')
