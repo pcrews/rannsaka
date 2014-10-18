@@ -39,7 +39,7 @@ parser.add_argument('--workers', '-w',
                     default=1,
                     help='Number of workers to use for test execution.'
                     )
-parser.add_argument('--hatch_rate',
+parser.add_argument('--hatch-rate',
                     action='store',
                     type=int,
                     dest='hatch_rate',
