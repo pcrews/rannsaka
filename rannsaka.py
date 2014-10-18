@@ -19,7 +19,7 @@ parser.add_argument('--test-file', '-t',
                     default='test_files/basic.py',
                     help='locust file to execute'
                     )
-parser.add_argument('--host', '-h',
+parser.add_argument('--host',
                     action='store',
                     dest='locust_host',
                     default='http://127.0.0.1',
