@@ -3,6 +3,41 @@ rannsaka
 
 mayhem-generation and analysis tool for testing
 
+rannsaka?
+---------
+
+It is what google translate says is Icelandic for 'probe' ;)
+
+Design
+-------
+
+This tool is designed to produce stressful, randomized workloads
+for openstack systems.
+
+It leverages locust.io for general test execution and would-be testers
+create locust files that model the behavior to be tested.
+
+The tool should serve a similar purpose as the random query generator
+does for database systems.
+
+The idea is that complex system cannot be adequately tested via
+individually crafted test-cases.  This is because human validation
+is time and brain intensive and several projects' experience has been
+that such tests are often shallow.  By utilizing software to better
+emulate random, real world workloads, more bugs can be found before
+making their way to the end user.
+
+This is not intended to replace other testing tools.
+One may think of it as a tool to help generate more formal test cases
+for the regression suite - fishing with dynamite, as it were.
+
+Future work
+------------
+
+- API calls for more openstack functions
+- Validation modules that can be turned on / off for requests
+- Utilization of core tempest code (config, logging, tempest libs)
+
 ::
 
     usage: rannsaka.py [-h] [--config CONFIG_FILE] [--test-file WORKER_CONFIG]
