@@ -19,13 +19,13 @@ parser.add_argument('--test-file', '-t',
                     default='test_files/basic.py',
                     help='locust file to execute'
                     )
-parser.add_argument('--host',
+parser.add_argument('--host', '-h',
                     action='store',
                     dest='locust_host',
                     default='http://127.0.0.1',
                     help='Test host'
                     )
-parser.add_argument('--requests',
+parser.add_argument('--requests', '-r',
                     action='store',
                     type=int,
                     dest='request_count',
@@ -38,6 +38,13 @@ parser.add_argument('--workers', '-w',
                     dest='worker_count',
                     default=1,
                     help='Number of workers to use for test execution.'
+                    )
+parser.add_argument('--hatch_rate',
+                    action='store',
+                    type=int,
+                    dest='hatch_rate',
+                    default=10,
+                    help='Per-second hatch rate for test workers.'
                     )
 parser.add_argument('--verbose', '-v',
                     action='count',
@@ -64,10 +71,11 @@ if args.verbose:
 # get info from config file
 
 # call locust
-cmd = "locust --no-web -c %s -f %s -n %s --host %s" % (args.worker_count,
-                                                   args.worker_config,
-                                                   args.request_count,
-                                                   args.locust_host)
+cmd = "locust --no-web -c %s -f %s -n %s --host %s --hatch-rate %s" % (args.worker_count,
+                                                                       args.worker_config,
+                                                                       args.request_count,
+                                                                       args.locust_host,
+                                                                       args.hatch_rate)
 
 print cmd
 status, output = commands.getstatusoutput(cmd)
