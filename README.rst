@@ -6,13 +6,13 @@ mayhem-generation and analysis tool for testing
 rannsaka?
 ---------
 
-It is what google translate says is Icelandic for 'probe' ;)
+It is what Google translate says is Icelandic for 'probe' ;)
 
 Design
 -------
 
 This tool is designed to produce stressful, randomized workloads
-for openstack systems.
+for OpenStack systems.
 
 It leverages locust.io for general test execution and would-be testers
 create locust files that model the behavior to be tested.
@@ -38,6 +38,9 @@ Future work
 - Validation modules that can be turned on / off for requests
 - Utilization of core tempest code (config, logging, tempest libs)
 
+Usage
+-----
+
 ::
 
     usage: rannsaka.py [-h] [--config CONFIG_FILE] [--test-file WORKER_CONFIG]
@@ -61,6 +64,11 @@ Future work
                             increase output
       --debug, -d           Controls debug output. NOT YET IMPLEMENTED
     
+
+Example
+-------
+
+::
     
     python rannsaka.py --host=http://127.0.0.1 --requests 50
     locust --no-web -c 1 -f test_files/basic.py -n 50 --host http://127.0.0.1
