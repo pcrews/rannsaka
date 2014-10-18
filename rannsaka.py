@@ -6,7 +6,7 @@ import time
 
 import yaml
 
-parser = argparse.ArgumentParser(description='ransakka.py:  API probe / testing tool for OpenStack projects')
+parser = argparse.ArgumentParser(description='rannsaka.py:  API probe / testing tool for OpenStack projects')
 parser.add_argument('--config',
                     action='store',
                     dest='config_file',

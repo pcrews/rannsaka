@@ -45,9 +45,10 @@ Usage
 
     usage: rannsaka.py [-h] [--config CONFIG_FILE] [--test-file WORKER_CONFIG]
                        [--host LOCUST_HOST] [--requests REQUEST_COUNT]
-                       [--workers WORKER_COUNT] [--verbose] [--debug]
-    
-    ransakka.py: API probe / testing tool for OpenStack projects
+                       [--workers WORKER_COUNT] [--hatch_rate HATCH_RATE]
+                       [--verbose] [--debug]
+
+    rannsaka.py: API probe / testing tool for OpenStack projects
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -56,14 +57,15 @@ Usage
       --test-file WORKER_CONFIG, -t WORKER_CONFIG
                             locust file to execute
       --host LOCUST_HOST    Test host
-      --requests REQUEST_COUNT
+      --requests REQUEST_COUNT, -r REQUEST_COUNT
                             Total number of requests to make across all workers
       --workers WORKER_COUNT, -w WORKER_COUNT
                             Number of workers to use for test execution.
+      --hatch_rate HATCH_RATE
+                            Per-second hatch rate for test workers.
       --verbose, -v         Controls internal output. Utilize multiple times to
                             increase output
       --debug, -d           Controls debug output. NOT YET IMPLEMENTED
-    
 
 Example
 -------
