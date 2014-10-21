@@ -11,6 +11,7 @@ from lib.openstack.nova import list_servers
 from lib.openstack.nova import list_servers_detail
 from lib.openstack.nova import list_flavors
 from lib.openstack.nova import list_flavors_detail
+from lib.openstack.nova import list_flavor_detail
 from lib.openstack.nova import list_images
 from lib.openstack.nova import list_images_detail
 from lib.openstack.nova import list_image_detail
@@ -41,6 +42,10 @@ class UserBehavior(baseTaskSet):
     @task(5)
     def nova_list_flavors_detail(self):
         list_flavors_detail(self)
+
+    @task(5)
+    def nova_list_flavor_detail(self):
+        list_flavor_detail(self)
 
     @task(5)
     def nova_list_limits(self):

@@ -31,6 +31,16 @@ def nova_post_request(self, url_detail, data):
     self.output("Response content: %s" % response.content)
     return response
 
+def nova_get_flavor_id(self):
+    """ Return a random flavor from currently
+        available flavors
+    """
+
+    response = nova_get_request(self, 'flavors')
+    flavor_list = json.loads(response.content)['flavors']
+    flavor_id = random.choice([i['id'] for i in flavor_list])
+    return flavor_id
+
 def nova_get_image_id(self):
     """ Return a random image from currently
         available images
@@ -75,6 +85,11 @@ def list_flavors(self):
 
 def list_flavors_detail(self):
     nova_get_request(self, 'flavors/detail')
+
+def list_flavor_detail(self, flavor_id=None):
+    if not flavor_id:
+        flavor_id = nova_get_flavor_id(self)
+    nova_get_request(self, 'flavors/%s' % flavor_id)
 
 def list_limits(self):
     nova_get_request(self, 'limits')
