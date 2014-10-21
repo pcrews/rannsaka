@@ -13,6 +13,8 @@ from lib.openstack.nova import list_flavors
 from lib.openstack.nova import list_flavors_detail
 from lib.openstack.nova import list_images
 from lib.openstack.nova import list_images_detail
+from lib.openstack.nova import list_image_detail
+from lib.openstack.nova import list_image_metadata
 from lib.openstack.nova import list_limits
  
 
@@ -51,6 +53,14 @@ class UserBehavior(baseTaskSet):
     @task(5)
     def nova_list_images_detail(self):
         list_images_detail(self)
+
+    @task(5)
+    def nova_list_image_detail(self):
+        list_image_detail(self)
+
+    @task(5)
+    def nova_list_image_metadata(self):
+        list_image_metadata(self)
 
     @task(1)
     def keystone_auth(self):
