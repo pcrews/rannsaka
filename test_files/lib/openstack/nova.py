@@ -71,7 +71,7 @@ def nova_get_image_id(self):
 def nova_get_server_id(self):
     response = nova_get_request(self, 'servers')
     server_list = json.loads(response.content)['servers']
-    server_id = random.choise([i['id'] for i in server_list])
+    server_id = random.choice([i['id'] for i in server_list])
     return server_id
 
 def nova_get_test_metadata(self):
@@ -103,7 +103,7 @@ def list_servers(self):
 def list_servers_detail(self):
     nova_get_request(self, 'servers/detail')
 
-def list_server_detail(self, server_id):
+def list_server_detail(self, server_id=None):
     if not server_id:
         server_id = nova_get_server_id(self)
     nova_get_request(self,
