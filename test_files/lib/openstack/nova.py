@@ -186,3 +186,14 @@ def delete_server(self, server_id):
     nova_delete_request(self,
                        'servers/%s' % server_id,
                         locust_name='servers/[id]')
+
+def reboot_server(self, server_id):
+    data = {
+           "reboot": {
+                     "type": "SOFT"
+                     }
+           }
+    nova_post_request(self,
+                      'servers/%s/action' % server_id,
+                      data,
+                      locust_name='servers/[reboot]/[id]')
