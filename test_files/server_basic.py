@@ -10,6 +10,7 @@ from lib.baseTaskSet import baseTaskSet
 from lib.openstack.keystone import get_auth_token
 from lib.openstack.nova import list_servers
 from lib.openstack.nova import list_servers_detail
+from lib.openstack.nova import list_server_detail
 from lib.openstack.nova import list_flavors
 from lib.openstack.nova import list_flavors_detail
 from lib.openstack.nova import list_flavor_detail
@@ -62,6 +63,9 @@ class UserBehavior(baseTaskSet):
     def nova_list_servers_detail(self):
         list_servers_detail(self)
 
+    @task(4)
+    def nova_list_server_detail(self):
+        list_server_detail(self)
 
     @task(1)
     def nova_list_limits(self):
