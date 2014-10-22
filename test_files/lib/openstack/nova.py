@@ -3,19 +3,19 @@ import json
 import string
 import random
 
-def nova_get_request(self, url_detail):
+def nova_get_request(self, url_detail, locust_name=None):
     url = self.get_endpoint('compute')
     if url_detail:
         url = os.path.join(url, url_detail)
     headers = {'X-Auth-Project-Id': self.keystone_tenant,
                'X-Auth-Token': self.auth_token}
-    response = self.client.get(url, headers=headers)
+    response = self.client.get(url, headers=headers, name=locust_name)
     self.output(url)
     self.output("Response status code: %s" % response.status_code)
     self.output("Response content: %s" % response.content)
     return response
 
-def nova_post_request(self, url_detail, data):
+def nova_post_request(self, url_detail, data=None, locust_name=None):
     url = self.get_endpoint('compute')
     if url_detail:
         url = os.path.join(url, url_detail)
@@ -25,7 +25,24 @@ def nova_post_request(self, url_detail, data):
                'Accept': 'application/json'}
     response = self.client.post(url,
                                headers=headers,
-                               data=json.dumps(data))
+                               data=json.dumps(data),
+                               name=locust_name)
+    self.output(url)
+    self.output("Response status code: %s" % response.status_code)
+    self.output("Response content: %s" % response.content)
+    return response
+
+def nova_delete_request(self, url_detail, locust_name=None):
+    url = self.get_endpoint('compute')
+    if url_detail:
+        url = os.path.join(url, url_detail)
+    headers = {'X-Auth-Project-Id': self.keystone_tenant,
+               'X-Auth-Token': self.auth_token,
+               'Content-Type': 'application/json',
+               'Accept': 'application/json'}
+    response = self.client.delete(url,
+                                  headers=headers,
+                                  name=locust_name)
     self.output(url)
     self.output("Response status code: %s" % response.status_code)
     self.output("Response content: %s" % response.content)
@@ -89,7 +106,9 @@ def list_flavors_detail(self):
 def list_flavor_detail(self, flavor_id=None):
     if not flavor_id:
         flavor_id = nova_get_flavor_id(self)
-    nova_get_request(self, 'flavors/%s' % flavor_id)
+    nova_get_request(self,
+                     'flavors/%s' % flavor_id,
+                     locust_name='flavors/[id]')
 
 def list_limits(self):
     nova_get_request(self, 'limits')
@@ -105,12 +124,16 @@ def list_image_detail(self, image_id=None):
         # get available images and randomly
         # choose one
         image_id = nova_get_image_id(self) 
-    nova_get_request(self, 'images/%s' % image_id)
+    nova_get_request(self,
+                     'images/%s' % image_id,
+                     locust_name='images/[id]')
 
 def list_image_metadata(self, image_id=None):
     if not image_id:
         image_id = nova_get_image_id(self)
-    nova_get_request(self, 'images/%s/metadata' % image_id)
+    nova_get_request(self,
+                     'images/%s/metadata' % image_id,
+                     locust_name='images/[id]/metadata')
 
 def update_image_metadata(self, image_id = None, metadata=None):
     if not image_id:
@@ -120,4 +143,46 @@ def update_image_metadata(self, image_id = None, metadata=None):
     data = {"metadata":metadata}
     nova_post_request(self,
                       'images/%s/metadata' % image_id,
-                      data)
+                      data,
+                      locust_name='images/[id]/metadata')
+
+def create_server(self,
+                  image_id=None,
+                  flavor_id=None,
+                  secgroup=None,
+                  name=None,
+                  max_count=1,
+                  min_count=1
+                  ):
+    if not image_id:
+        image_id = nova_get_image_id(self)
+    if not flavor_id:
+        flavor_id = nova_get_flavor_id(self)
+    if not name:
+        name = "server-%s" % uuid.uuid4()
+    data = {
+           "server": {
+                     "name": name,
+                     "imageRef": image_id,
+                     "flavorRef": flavor_id,
+                     "max_count": max_count,
+                     "min_count": min_count,
+                     "security_groups": [
+                         {
+                         "name": "default"
+                         },
+                     ]
+                     }
+           }
+    response = nova_post_request(self,
+                                'servers',
+                                data)
+    # TODO: helper code to parse out
+    # server_id's to return as a list?
+    return response
+
+def delete_server(self, server_id):
+    # TODO: random server_id selection?
+    nova_delete_request(self,
+                       'servers/%s' % server_id,
+                        locust_name='servers/[id]')
