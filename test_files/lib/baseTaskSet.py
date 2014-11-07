@@ -24,6 +24,7 @@ class baseTaskSet(TaskSet):
         self.keystone_user = self.get_tempest_config_value('identity','username')
         self.keystone_tenant = self.get_tempest_config_value('identity','tenant_name')
         self.keystone_pw = self.get_tempest_config_value('identity','password')
+        self.keystone_uri = self.get_tempest_config_value('identity','uri')
 
         self.output("Prepare to be rannsaka'd...")
 

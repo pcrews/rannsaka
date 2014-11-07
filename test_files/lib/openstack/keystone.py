@@ -1,7 +1,9 @@
+import os
+
 import json
 
 def get_auth_token(self):
-        url = 'http://192.168.0.5:5000/v2.0/tokens'
+        url = os.path.join(self.keystone_uri, 'tokens')
         headers = {'Content-Type': 'application/json',
                    #'Accept': 'application/json'}
                    'Accept': 'application/json',
