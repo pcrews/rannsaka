@@ -19,6 +19,7 @@ from lib.openstack.nova import resize_server
 from lib.openstack.nova import confirm_resize_server
 from lib.openstack.nova import revert_resize_server
 from lib.openstack.nova import list_limits
+from lib.openstack.nova import create_flavor
  
 
 class UserBehavior(baseTaskSet):
@@ -26,17 +27,39 @@ class UserBehavior(baseTaskSet):
         super(UserBehavior, self).on_start()
         self.server_id = None
         self.server_count = 0
+        # Use admin pw to create test flavors
+        self.keystone_user = self.get_tempest_config_value('identity', 'admin_username')
+        self.keystone_pw = self.get_tempest_config_value('identity', 'admin_password')
+        self.keystone_tenant = self.get_tempest_config_value('identity', 'admin_tenant_name')
         self.auth_token, self.tenant_id, self.service_catalog = get_auth_token(self)
+        create_flavor(self, name='test1',
+                     ram=4096,
+                     vcpus=2,
+                     disk=0,
+                     id=9999,
+                     is_public=True)
+        create_flavor(self, name='test2',
+                     ram=2048,
+                     vcpus=2,
+                     disk=0,
+                     id=9998,
+                     is_public=True)
+
+        # reset to 'main' test user
+        self.keystone_user = self.get_tempest_config_value('identity','username')
+        self.keystone_tenant = self.get_tempest_config_value('identity','tenant_name')
+        self.keystone_pw = self.get_tempest_config_value('identity','password')
+        self.auth_token, self.tenant_id, self.service_catalog = get_auth_token(self)
+
+
 
     @task(10)
     def nova_create_server(self):
         if not self.server_id:
-            flavor_id = random.choice([42,42,42,
-                                       #84,84,84,
-                                       1111,1111,1111,1111,1111,
-                                       1112,1112,
-                                       1113,
-                                       1114])
+            flavor_id = random.choice([42,42,42,42,42,
+                                       84,84,
+                                       451
+                                       ])
             response = create_server(self,
                                      flavor_id=flavor_id,
                                      name="server-%s-%s" % (self.id, self.server_count))
@@ -50,7 +73,7 @@ class UserBehavior(baseTaskSet):
 
     #@task(4)
     def nova_resize_server(self):
-        flavor_id = random.choice([42,84,1111,1111,1111,1111,1112,1113,1113,1114,1114,1114])
+        flavor_id = random.choice([42,84,451,9999,9999,9999,9999,9998,9999,9999,9998,9998,9998])
         self.output("Resize server | %s | %s " % (self.server_id, flavor_id))
         if self.server_id:
             resize_server(self, self.server_id, flavor_id)

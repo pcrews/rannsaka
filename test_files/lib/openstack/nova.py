@@ -296,3 +296,32 @@ def overwrite_server_metadata(self, server_id=None, metadata=None):
                        'nova_overwrite_server_metadata',
                        data,
                        locust_name='servers/[id]/metadata')
+
+def list_flavors(self):
+    return nova_request(self,
+                       'flavors',
+                       'get',
+                       'nova_list_flavors')
+
+def create_flavor(self, name=None,
+                 ram=128,
+                 vcpus=1,
+                 disk=0,
+                 id='auto',
+                 is_public=False):
+    data = {
+           "flavor": {
+                     "name": name,
+                     "ram": ram,
+                     "vcpus": vcpus,
+                     "disk": disk,
+                     "id": id,
+                     "os-flavor-access:is_public": is_public 
+                     }
+          }
+    return nova_request(self,
+                       'flavors',
+                       'post',
+                       'nova_create_flavor',
+                       data)
+
