@@ -79,7 +79,7 @@ if args.verbose:
 ###################
 
 # write common locust file for workers to read
-locust_config_path = os.path.join(args.workdir, args.locust_config)
+locust_config_path = 'work/locust_common.yml' 
 with open(locust_config_path, 'w') as config_out:
     locust_data = {}
     locust_data['args'] = vars(args)
