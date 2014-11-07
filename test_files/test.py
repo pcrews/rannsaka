@@ -22,12 +22,8 @@ from lib.openstack.nova import list_limits
 class UserBehavior(baseTaskSet):
     def on_start(self):
         super(UserBehavior, self).on_start()
-        self.keystone_user = "demo"
-        self.keystone_pw = "TNETENNBA" 
-        self.keystone_tenant = "demo" 
         self.auth_token, self.tenant_id, self.service_catalog = get_auth_token(self)
 
-    """
     @task(5)
     def nova_list_servers(self):
         list_servers(self)
@@ -40,7 +36,6 @@ class UserBehavior(baseTaskSet):
     def nova_list_flavors(self):
         list_flavors(self)
 
-    """
     @task(5)
     def nova_list_flavors_detail(self):
         list_flavors_detail(self)
@@ -49,7 +44,6 @@ class UserBehavior(baseTaskSet):
     def nova_list_flavor_detail(self):
         list_flavor_detail(self)
 
-    """
     @task(5)
     def nova_list_limits(self):
         list_limits(self)
@@ -73,7 +67,6 @@ class UserBehavior(baseTaskSet):
     @task(1)
     def keystone_auth(self):
         get_auth_token(self)
-    """
 
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior

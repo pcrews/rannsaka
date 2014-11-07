@@ -15,22 +15,19 @@ from lib.openstack.nova import list_image_metadata
 class UserBehavior(baseTaskSet):
     def on_start(self):
         super(UserBehavior, self).on_start()
-        self.keystone_user = "demo"
-        self.keystone_pw = "TNETENNBA" 
-        self.keystone_tenant = "demo" 
         self.auth_token, self.tenant_id, self.service_catalog = get_auth_token(self)
 
     @task(5)
-    #def nova_list_images(self):
-    #    list_images(self)
+    def nova_list_images(self):
+        list_images(self)
 
     @task(5)
-    #def nova_list_images_detail(self):
-    #    list_images_detail(self)
+    def nova_list_images_detail(self):
+        list_images_detail(self)
 
     @task(5)
-    #def nova_list_image_detail(self):
-    #    list_image_detail(self)
+    def nova_list_image_detail(self):
+        list_image_detail(self)
 
     @task(5)
     def nova_list_image_metadata(self):

@@ -19,9 +19,6 @@ from lib.openstack.nova import list_limits
 class UserBehavior(baseTaskSet):
     def on_start(self):
         super(UserBehavior, self).on_start()
-        self.keystone_user = "demo"
-        self.keystone_pw = "TNETENNBA" 
-        self.keystone_tenant = "demo" 
         self.server_id = None
         self.server_count = 0
         self.auth_token, self.tenant_id, self.service_catalog = get_auth_token(self)
