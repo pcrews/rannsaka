@@ -80,7 +80,6 @@ class UserBehavior(baseTaskSet):
             choices = [1,1,1,1,1,2,2]
             #if random.choice(choices) %2 != 0:
             if choices:
-                self.output("RESIZE YUSSSS!")
                 confirm_resize_server(self, server_id)
             else:
                 revert_resize_server(self,server_id)
@@ -110,7 +109,6 @@ class UserBehavior(baseTaskSet):
 
     @task(3)
     def nova_list_servers(self):
-        self.output("LIST_SERVERS")
         response = list_servers(self)
 
     @task(3)
@@ -124,7 +122,6 @@ class UserBehavior(baseTaskSet):
 
     @task(4)
     def nova_list_servers_detail(self):
-        self.output("LIST_SERVERS_DETAIL")
         list_servers_detail(self)
 
     @task(4)
