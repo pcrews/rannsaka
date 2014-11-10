@@ -22,7 +22,7 @@ parser.add_argument('--tempest-config',
 parser.add_argument('--test-file', '-t',
                     action='store',
                     dest='worker_config',
-                    default='test_files/basic.py',
+                    default='test_files/basic_get.py',
                     help='locust file to execute'
                     )
 parser.add_argument('--host',

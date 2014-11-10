@@ -255,21 +255,57 @@ def resize_server(self, server_id, flavor_id=None):
 
 def confirm_resize_server(self, server_id):
     data = { "confirmResize": None }
-    nova_request(self,
-                'servers/%s/action' % server_id,
-                'post',
-                'nova_confirm_resize_server',
-                data,
-                locust_name='servers/[confirm_resize]/[id]')
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_confirm_resize_server',
+                       data,
+                       locust_name='servers/[confirm_resize]/[id]')
 
 def revert_resize_server(self, server_id):
     data = { "revertResize": None }
-    nova_request(self,
-                'servers/%s/action' % server_id,
-                'post',
-                'nova_resize_server',
-                data,
-                locust_name='servers/[revert_resize]/[id]')
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_resize_server',
+                       data,
+                       locust_name='servers/[revert_resize]/[id]')
+
+def pause_server(self, server_id):
+    data = { "pause": None }
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_pause_server',
+                       data,
+                       locust_name='servers/[pause]/[id]')
+
+def unpause_server(self, server_id):
+    data = { "unpause": None }
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_unpause_server',
+                       data,
+                       locust_name='servers/[unpause]/[id]')
+
+def suspend_server(self, server_id):
+    data = { "suspend": None }
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_suspend_server',
+                       data,
+                       locust_name='servers/[suspend]/[id]')
+
+def resume_server(self, server_id):
+    data = { "resume": None }
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_resume_server',
+                       data,
+                       locust_name='servers/[resume]/[id]')
 
 def update_server_metadata(self, server_id=None, metadata=None):
     if not server_id:

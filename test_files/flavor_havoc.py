@@ -34,10 +34,10 @@ class UserBehavior(baseTaskSet):
     def create_bad_flavor(self):
         flavor_name = "%s-%s" % ( self.id, self.flavor_count)
         ram = random.choice([0,
-                             0,1,-1,'abbazabba',
+                             0,1,-1,.5,'abbazabba',
                              'cupcake-disco-biscuits',
                              '']) 
-        vcpus = random.choice([-1,0,'absconding-benefits'])
+        vcpus = random.choice([-1,0,1,100000,.5,'absconding-benefits'])
         id=random.choice([flavor_name,
                           flavor_name,
                           flavor_name,
