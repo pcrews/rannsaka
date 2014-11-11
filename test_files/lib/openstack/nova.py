@@ -56,6 +56,18 @@ def nova_get_server_id(self):
     server_id = random.choice([i['id'] for i in server_list])
     return server_id
 
+def nova_get_floating_ip(self):
+    response = nova_request(self, 'os-floating-ips', 'get')
+    ip_list = json.loads(response.content)['floating_ips']
+    floating_ip = random.choice([i['ip'] for i in ip_list])
+    return floating_ip
+
+def nova_get_floating_ip_id(self):
+    response = nova_request(self, 'os-floating-ips', 'get')
+    ip_list = json.loads(response.content)['floating_ips']
+    floating_ip_id = random.choice([i['id'] for i in ip_list])
+    return floating_ip_id
+
 def nova_get_test_metadata(self):
     """ TODO - allow flag + image_id
         if received, then get actual
@@ -361,3 +373,74 @@ def create_flavor(self, name=None,
                        'nova_create_flavor',
                        data)
 
+def create_floating_ip(self, pool=None):
+    data = {}
+    if pool:
+        data['pool']= pool
+    return nova_request(self,
+                       'os-floating-ips',
+                       'post',
+                       'nova_create_floating_ip',
+                       data)
+
+def delete_floating_ip(self, floating_ip_id=None):
+    if not floating_ip_id:
+        floating_ip_id = nova_get_floating_ip_id(self)
+    return nova_request(self,
+                       'os-floating-ips/%s' % floating_ip_id,
+                       'delete',
+                       'nova_delete_floating_ip',
+                       locust_name='os-floating-ips/[floating-ip-id]') 
+
+def list_floating_ips(self):
+    return nova_request(self,
+                        'os-floating-ips',
+                        'get',
+                        'nova_list_floating_ips')
+
+def assign_floating_ip(self,
+                       server_id=None,
+                       floating_ip=None,
+                       pool=None):
+    if not server_id:
+        server_id = nova_get_server_id(self)
+    if not floating_ip:
+        floating_ip = nova_get_floating_ip(self)
+    data = {
+           "addFloatingIp": {
+                            "address": floating_ip 
+                            }
+           }
+    if pool:
+        data['addFloatingIp']['pool']=pool
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_assign_floating_ip',
+                       data,
+                       locust_name='servers/[server_id]/[assign-floating-ip]')
+
+def remove_floating_ip(self,
+                       server_id=None,
+                       floating_ip=None,
+                       pool=None):
+    # TODO: make this smarter and try
+    # to find any floating ips associated
+    # with the specified / selected server
+    # tests will need to handle doing things
+    # that make sense
+    if not server_id:
+        server_id = nova_get_server_id(self)
+    if not floating_ip:
+        floating_ip = nova_get_floating_ip(self)
+    data = {
+           "removeFloatingIp": {
+                               "address": floating_ip
+                               }
+           }
+    return nova_request(self,
+                       'servers/%s/action' % server_id,
+                       'post',
+                       'nova_remove_floating_ip',
+                       data,
+                       locust_name='servers/[server_id]/[remove-floating-ip]')
