@@ -3,6 +3,7 @@ import json
 import string
 import random
 
+
 def nova_request(self,
                  url_detail,
                  request_type='get',
@@ -30,6 +31,7 @@ def nova_request(self,
     self.output("Response content: %s" % response.content)
     return response
 
+
 def nova_get_flavor_id(self):
     """ Return a random flavor from currently
         available flavors
@@ -39,6 +41,7 @@ def nova_get_flavor_id(self):
     flavor_list = json.loads(response.content)['flavors']
     flavor_id = random.choice([i['id'] for i in flavor_list])
     return flavor_id
+
 
 def nova_get_image_id(self):
     """ Return a random image from currently
@@ -50,11 +53,13 @@ def nova_get_image_id(self):
     image_id = random.choice([i['id'] for i in image_list])
     return image_id
 
+
 def nova_get_server_id(self):
     response = nova_request(self, 'servers', 'get')
     server_list = json.loads(response.content)['servers']
     server_id = random.choice([i['id'] for i in server_list])
     return server_id
+
 
 def nova_get_floating_ip(self):
     response = nova_request(self, 'os-floating-ips', 'get')
@@ -62,11 +67,13 @@ def nova_get_floating_ip(self):
     floating_ip = random.choice([i['ip'] for i in ip_list])
     return floating_ip
 
+
 def nova_get_floating_ip_id(self):
     response = nova_request(self, 'os-floating-ips', 'get')
     ip_list = json.loads(response.content)['floating_ips']
     floating_ip_id = random.choice([i['id'] for i in ip_list])
     return floating_ip_id
+
 
 def nova_get_test_metadata(self):
     """ TODO - allow flag + image_id
@@ -91,17 +98,20 @@ def nova_get_test_metadata(self):
     print metadata
     return metadata
 
+
 def list_servers(self):
     return nova_request(self,
                        'servers',
                        'get',
                        'nova_list_servers')
 
+
 def list_servers_detail(self):
     return nova_request(self,
                        'servers/detail',
                        'get',
                        'nova_list_servers_detail')
+
 
 def list_server_detail(self, server_id=None):
     if not server_id:
@@ -112,14 +122,17 @@ def list_server_detail(self, server_id=None):
                        'nova_list_server_detail',
                        locust_name='servers/[id]')
 
+
 def list_flavors(self):
     return nova_request(self,
                        'flavors',
                        'get',
                        'nova_list_flavors')
 
+
 def list_flavors_detail(self):
     return nova_get_request(self, 'flavors/detail')
+
 
 def list_flavor_detail(self, flavor_id=None):
     if not flavor_id:
@@ -130,11 +143,13 @@ def list_flavor_detail(self, flavor_id=None):
                        'nova_list_flavor_detail',
                        locust_name='flavors/[id]')
 
+
 def list_limits(self):
     return nova_request(self,
                        'limits',
                        'get',
                        'nova_list_limits')
+
 
 def list_images(self):
     return nova_request(self,
@@ -142,11 +157,13 @@ def list_images(self):
                        'get',
                        'nova_list_images')
 
+
 def list_images_detail(self):
     return nova_request(self,
                        'images/detail',
                        'get',
                        'nova_list_images_detail')
+
 
 def list_image_detail(self, image_id=None):
     if not image_id:
@@ -159,6 +176,7 @@ def list_image_detail(self, image_id=None):
                        'nova_list_image_detail',
                        locust_name='images/[id]')
 
+
 def list_image_metadata(self, image_id=None):
     if not image_id:
         image_id = nova_get_image_id(self)
@@ -167,6 +185,7 @@ def list_image_metadata(self, image_id=None):
                        'get',
                        'nova_list_image_metadata',
                        locust_name='images/[id]/metadata')
+
 
 def update_image_metadata(self, image_id = None, metadata=None):
     if not image_id:
@@ -181,6 +200,7 @@ def update_image_metadata(self, image_id = None, metadata=None):
                        data,
                        locust_name='images/[id]/metadata')
 
+
 def overwrite_image_metadata(self, image_id = None, metadata=None):
     if not image_id:
         image_id = nova_get_image_id(self)
@@ -193,6 +213,7 @@ def overwrite_image_metadata(self, image_id = None, metadata=None):
                        'nova_overwrite_image_metadata',
                        data,
                        locust_name='images/[id]/metadata')
+
 
 def create_server(self,
                   image_id=None,
@@ -231,6 +252,7 @@ def create_server(self,
     # server_id's to return as a list?
     return response
 
+
 def delete_server(self, server_id):
     # TODO: random server_id selection?
     nova_request(self,
@@ -238,6 +260,7 @@ def delete_server(self, server_id):
                 'delete',
                 'nova_delete_server',
                 locust_name='servers/[id]')
+
 
 def reboot_server(self, server_id):
     data = {
@@ -252,6 +275,7 @@ def reboot_server(self, server_id):
                 data,
                 locust_name='servers/[reboot]/[id]')
 
+
 def resize_server(self, server_id, flavor_id=None):
     data = {
            "resize": {
@@ -265,6 +289,7 @@ def resize_server(self, server_id, flavor_id=None):
                 data,
                 locust_name='servers/[resize]/[id]')
 
+
 def confirm_resize_server(self, server_id):
     data = { "confirmResize": None }
     return nova_request(self,
@@ -273,6 +298,7 @@ def confirm_resize_server(self, server_id):
                        'nova_confirm_resize_server',
                        data,
                        locust_name='servers/[confirm_resize]/[id]')
+
 
 def revert_resize_server(self, server_id):
     data = { "revertResize": None }
@@ -283,6 +309,7 @@ def revert_resize_server(self, server_id):
                        data,
                        locust_name='servers/[revert_resize]/[id]')
 
+
 def pause_server(self, server_id):
     data = { "pause": None }
     return nova_request(self,
@@ -291,6 +318,7 @@ def pause_server(self, server_id):
                        'nova_pause_server',
                        data,
                        locust_name='servers/[pause]/[id]')
+
 
 def unpause_server(self, server_id):
     data = { "unpause": None }
@@ -301,6 +329,7 @@ def unpause_server(self, server_id):
                        data,
                        locust_name='servers/[unpause]/[id]')
 
+
 def suspend_server(self, server_id):
     data = { "suspend": None }
     return nova_request(self,
@@ -310,6 +339,7 @@ def suspend_server(self, server_id):
                        data,
                        locust_name='servers/[suspend]/[id]')
 
+
 def resume_server(self, server_id):
     data = { "resume": None }
     return nova_request(self,
@@ -318,6 +348,7 @@ def resume_server(self, server_id):
                        'nova_resume_server',
                        data,
                        locust_name='servers/[resume]/[id]')
+
 
 def update_server_metadata(self, server_id=None, metadata=None):
     if not server_id:
@@ -332,6 +363,7 @@ def update_server_metadata(self, server_id=None, metadata=None):
                        data,
                        locust_name='servers/[id]/metadata')
 
+
 def overwrite_server_metadata(self, server_id=None, metadata=None):
     if not server_id:
         server_id = nova_get_server_id(self)
@@ -345,11 +377,13 @@ def overwrite_server_metadata(self, server_id=None, metadata=None):
                        data,
                        locust_name='servers/[id]/metadata')
 
+
 def list_flavors(self):
     return nova_request(self,
                        'flavors',
                        'get',
                        'nova_list_flavors')
+
 
 def create_flavor(self, name=None,
                  ram=128,
@@ -373,6 +407,7 @@ def create_flavor(self, name=None,
                        'nova_create_flavor',
                        data)
 
+
 def create_floating_ip(self, pool=None):
     data = {}
     if pool:
@@ -383,6 +418,7 @@ def create_floating_ip(self, pool=None):
                        'nova_create_floating_ip',
                        data)
 
+
 def delete_floating_ip(self, floating_ip_id=None):
     if not floating_ip_id:
         floating_ip_id = nova_get_floating_ip_id(self)
@@ -392,11 +428,13 @@ def delete_floating_ip(self, floating_ip_id=None):
                        'nova_delete_floating_ip',
                        locust_name='os-floating-ips/[floating-ip-id]') 
 
+
 def list_floating_ips(self):
     return nova_request(self,
                         'os-floating-ips',
                         'get',
                         'nova_list_floating_ips')
+
 
 def assign_floating_ip(self,
                        server_id=None,
@@ -419,6 +457,7 @@ def assign_floating_ip(self,
                        'nova_assign_floating_ip',
                        data,
                        locust_name='servers/[server_id]/[assign-floating-ip]')
+
 
 def remove_floating_ip(self,
                        server_id=None,
@@ -444,3 +483,14 @@ def remove_floating_ip(self,
                        'nova_remove_floating_ip',
                        data,
                        locust_name='servers/[server_id]/[remove-floating-ip]')
+
+
+def list_server_actions(self,
+                        server_id=None):
+    if not server_id:
+        server_id = nova_get_server_id(self)
+    return nova_request(self,
+                       'servers/%s/os-instance-actions' % server_id,
+                       'get',
+                       'nova_list_server_actions',
+                       locust_name='servers/[server_id]/[list-actions]')
