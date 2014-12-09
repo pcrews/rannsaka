@@ -9,18 +9,18 @@ from lib.baseTaskSet import baseTaskSet
 
 # TODO - make these config-driven
 from lib.openstack.keystone import get_auth_token
-from lib.openstack.nova import list_servers
-from lib.openstack.nova import list_servers_detail
-from lib.openstack.nova import list_server_detail
-from lib.openstack.nova import create_server
-from lib.openstack.nova import delete_server
-from lib.openstack.nova import reboot_server
-from lib.openstack.nova import resize_server
-from lib.openstack.nova import confirm_resize_server
-from lib.openstack.nova import revert_resize_server
-from lib.openstack.nova import list_limits
-from lib.openstack.nova import nova_get_server_id
-from lib.openstack.nova import create_flavor
+from lib.openstack.nova_api import list_servers
+from lib.openstack.nova_api import list_servers_detail
+from lib.openstack.nova_api import list_server_detail
+from lib.openstack.nova_api import create_server
+from lib.openstack.nova_api import delete_server
+from lib.openstack.nova_api import reboot_server
+from lib.openstack.nova_api import resize_server
+from lib.openstack.nova_api import confirm_resize_server
+from lib.openstack.nova_api import revert_resize_server
+from lib.openstack.nova_api import list_limits
+from lib.openstack.nova_api import nova_get_server_id
+from lib.openstack.nova_api import create_flavor
  
 
 class UserBehavior(baseTaskSet):

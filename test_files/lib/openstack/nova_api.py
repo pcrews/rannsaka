@@ -3,6 +3,7 @@ import json
 import string
 import random
 
+import cinder_api
 
 def nova_request(self,
                  url_detail,
@@ -53,6 +54,17 @@ def nova_get_image_id(self):
     image_id = random.choice([i['id'] for i in image_list])
     return image_id
 
+def nova_get_image_id_by_name(self, name=None):
+    """ Return a random image from currently
+        available images
+    """
+
+    response = nova_request(self, 'images', 'get')
+    image_list = json.loads(response.content)['images']
+    for image_datum in image_list:
+        if image_datum['name'] == name:
+            return image_datum['id']
+    return None 
 
 def nova_get_server_id(self):
     response = nova_request(self, 'servers', 'get')
@@ -73,6 +85,18 @@ def nova_get_floating_ip_id(self):
     ip_list = json.loads(response.content)['floating_ips']
     floating_ip_id = random.choice([i['id'] for i in ip_list])
     return floating_ip_id
+
+
+def nova_get_attachment_id(self, server_id=None):
+    if not server_id:
+        server_id = nova_get_server_id(self)
+    response = nova_request(self,
+                           'servers/%s/os-volume_attachments' % server_id,
+                           'get',
+                           locust_name='servers/[server_id]/os-volume_attachments')
+    attachment_list = json.loads(response.content)['volumeAttachments']
+    attachment_id = random.choice([i['id'] for i in attachment_list])
+    return attachment_id 
 
 
 def nova_get_test_metadata(self):
@@ -260,6 +284,24 @@ def delete_server(self, server_id):
                 'delete',
                 'nova_delete_server',
                 locust_name='servers/[id]')
+
+
+def create_server_image(self, server_id, name=None, metadata=None):
+    if not name:
+        name = "%s-image-%s" %(server_id, uuid.uuid4())
+    data = {
+           "createImage": {
+                          "name": name 
+                          }
+           }
+    if metadata:
+        data['createImage']['metadata']=metadata
+    nova_request(self,
+                'servers/%s/action' % server_id,
+                'post',
+                'nova_create_server_image',
+                data,
+                locust_name='servers/[create_image]/[id]')
 
 
 def reboot_server(self, server_id):
@@ -494,3 +536,50 @@ def list_server_actions(self,
                        'get',
                        'nova_list_server_actions',
                        locust_name='servers/[server_id]/[list-actions]')
+
+
+def list_volume_attachments(self,
+                            server_id=None):
+    if not server_id:
+        server_id = nova_get_server_id(self)
+    return nova_request(self,
+                       'servers/%s/os-volume_attachments' % server_id,
+                       'get',
+                       'nova_list_volume_attachments',
+                       locust_name='servers/[server_id]/[list-volumes]')
+
+
+def attach_volume(self,
+                  server_id=None,
+                  volume_id=None,
+                  device_path=None):
+    if not server_id:
+        server_id = nova_get_server_id(self)
+    if not volume_id:
+        volume_id = cinder_api.cinder_get_volume_id(self)
+    data = { "volumeAttachment": {
+                                 "volumeId": volume_id,
+                                 "device": device_path
+                                 }
+           }
+    return nova_request(self,
+                       'servers/%s/os-volume_attachments' % server_id,
+                       'post',
+                       'nova_attach_volume',
+                       data,
+                       locust_name='servers/[server_id]/[attach-volume]')
+
+
+def remove_volume(self,
+                  server_id=None,
+                  attachment_id=None):
+    if not server_id:
+        server_id = nova_get_server_id(self)
+    if not attachment_id:
+        attachment_id = nova_get_attachment_id(self, server_id)
+    return nova_request(self,
+                       'servers/%s/os-volume_attachments/%s' % (server_id, attachment_id),
+                       'delete',
+                       'nova_remove_volume',
+                       locust_name='servers/[server_id]/[remove-volume]')
+
