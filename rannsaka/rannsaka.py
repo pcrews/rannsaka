@@ -101,11 +101,7 @@ while True:
     sys.stdout.write(nextline)
     sys.stdout.flush()
 
-output = process.communicate()[0]
 status = process.returncode
-
 print "Test run finishing with exit code: %s" % status
-print "Output:"
-print output
 print 'Fin!'
 sys.exit(status)
