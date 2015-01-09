@@ -25,9 +25,11 @@ def churn_server_pool(self):
     response = nova_base.list_servers(self)
     servers = json.loads(response.content)['servers']
     if len(servers) < self.min_server_count:
-        nova_base.create_server(self)
+        nova_base.create_server(self,
+                               name="server-%s-%s" % (self.id, self.server_count))
     elif len(servers) >= self.max_server_count:
-        nova_base.delete_server(self)
+        server_id = nova_base.get_server_id(self)
+        nova_base.delete_server(self, server_id)
 
 
 def resize_server(self):
