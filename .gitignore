@@ -16,6 +16,7 @@ eggs/
 lib/
 lib64/
 parts/
+rannsaka/work/*
 sdist/
 var/
 *.egg-info/
