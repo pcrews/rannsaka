@@ -74,14 +74,14 @@ def get_server_id(self):
     return server_id
 
 
-def nova_get_floating_ip(self):
+def get_floating_ip(self):
     response = nova_request(self, 'os-floating-ips', 'get')
     ip_list = json.loads(response.content)['floating_ips']
     floating_ip = random.choice([i['ip'] for i in ip_list])
     return floating_ip
 
 
-def nova_get_floating_ip_id(self):
+def get_floating_ip_id(self):
     response = nova_request(self, 'os-floating-ips', 'get')
     ip_list = json.loads(response.content)['floating_ips']
     floating_ip_id = random.choice([i['id'] for i in ip_list])
@@ -464,7 +464,7 @@ def create_floating_ip(self, pool=None):
 
 def delete_floating_ip(self, floating_ip_id=None):
     if not floating_ip_id:
-        floating_ip_id = nova_get_floating_ip_id(self)
+        floating_ip_id = get_floating_ip_id(self)
     return nova_request(self,
                        'os-floating-ips/%s' % floating_ip_id,
                        'delete',
@@ -486,7 +486,7 @@ def assign_floating_ip(self,
     if not server_id:
         server_id = get_server_id(self)
     if not floating_ip:
-        floating_ip = nova_get_floating_ip(self)
+        floating_ip = get_floating_ip(self)
     data = {
            "addFloatingIp": {
                             "address": floating_ip 
@@ -514,7 +514,7 @@ def remove_floating_ip(self,
     if not server_id:
         server_id = get_server_id(self)
     if not floating_ip:
-        floating_ip = nova_get_floating_ip(self)
+        floating_ip = get_floating_ip(self)
     data = {
            "removeFloatingIp": {
                                "address": floating_ip

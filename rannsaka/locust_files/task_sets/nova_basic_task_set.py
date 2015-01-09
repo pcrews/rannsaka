@@ -22,6 +22,10 @@ class NovaRandomStress(baseTaskSet):
     def on_start(self):
         super(NovaRandomStress, self).on_start()
         self.server_count = 0
+        self.min_server_count = 10 
+        self.max_server_count = 7
+        # limit list to less core / disk-intensive flavors in general
+        self.flavor_list = [42,42,84,84,451]
 
         # Use admin pw to create test flavors
         self.keystone_user = self.get_tempest_config_value('identity', 'admin_username')

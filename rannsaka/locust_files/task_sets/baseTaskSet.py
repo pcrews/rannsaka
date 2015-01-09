@@ -6,6 +6,8 @@ import yaml
 
 from locust import HttpLocust, TaskSet, task
 
+import base_tasks.keystone_v2_base as keystone_base
+
 class baseTaskSet(TaskSet):
     """ baseTaskSet class
         basic task set containing primary utility methods
@@ -25,6 +27,8 @@ class baseTaskSet(TaskSet):
         self.keystone_tenant = self.get_tempest_config_value('identity','tenant_name')
         self.keystone_pw = self.get_tempest_config_value('identity','password')
         self.keystone_uri = self.get_tempest_config_value('identity','uri')
+
+        self.auth_token, self.tenant_id, self.service_catalog = keystone_base.get_auth_token(self)
 
         self.output("Prepare to be rannsaka'd...")
 
