@@ -1,0 +1,10 @@
+args:
+  config_file: rannsaka.yml
+  debug: false
+  hatch_rate: 10
+  locust_host: http://192.168.0.5
+  request_count: 200
+  tempest_config: /opt/stack/tempest/etc/tempest.conf
+  verbose: 0
+  worker_config: locust_files/server_exp.py
+  worker_count: 1
