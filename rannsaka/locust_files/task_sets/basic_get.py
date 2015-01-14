@@ -9,9 +9,9 @@ import json
 from locust import HttpLocust, TaskSet, task
 
 from baseTaskSet import baseTaskSet
-import base_tasks.keystone_v2_base as keystone_base
-import base_tasks.nova_v2_base as nova_base
-import base_tasks.nova_v2_utility as nova_util
+import task_funcs.keystone_v2_base as keystone_base
+import task_funcs.nova_v2_base as nova_base
+import task_funcs.nova_v2_utility as nova_util
 
 class basicGet(baseTaskSet):
     """ task set designed to do insane, random, and valid things

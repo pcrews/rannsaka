@@ -17,7 +17,7 @@ parser.add_argument('--tempest-config',
                     action='store',
                     dest='tempest_config',
                     default='/opt/stack/tempest/etc/tempest.conf',
-                    help='File defining test credentials, etc for rannsaka to use. NOT YET IMPLEMENTED'
+                    help='File defining test credentials, etc for rannsaka to use.'
                     )
 parser.add_argument('--test-file', '-t',
                     action='store',

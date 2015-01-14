@@ -6,7 +6,7 @@ import yaml
 
 from locust import HttpLocust, TaskSet, task
 
-import base_tasks.keystone_v2_base as keystone_base
+import task_funcs.keystone_v2_base as keystone_base
 
 class baseTaskSet(TaskSet):
     """ baseTaskSet class
