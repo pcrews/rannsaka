@@ -14,14 +14,14 @@ import task_funcs.nova_v2_base as nova_base
 import task_funcs.nova_v2_utility as nova_util
 import task_funcs.heat_v1_base as heat_base
 
-class HeatBasicGet(baseTaskSet):
+class HeatBasicStress(baseTaskSet):
     """ task set designed to do insane, random, and valid things
-        via the nova api
+        via the heat api
 
     """
 
     def on_start(self):
-        super(HeatBasicGet, self).on_start()
+        super(HeatBasicStress, self).on_start()
         self.server_count = 0
         self.stack_count = 0 
         self.snapshot_count = 0
@@ -40,5 +40,10 @@ class HeatBasicGet(baseTaskSet):
              heat_base.list_stack_resources:4,
              heat_base.get_stack_template:7,
              heat_base.list_resource_types:7,
+             heat_base.suspend_stack:3,
+             heat_base.resume_stack:7,
+             heat_base.create_snapshot:5,
+             heat_base.delete_snapshot:2,
+             heat_base.restore_snapshot:1,
              nova_util.refresh_auth_token:1
             } 
