@@ -254,7 +254,7 @@ def restore_snapshot(self,
     if not snapshot_id:
         snapshot_id, stack_name, stack_id = get_snapshot_id(self)
     response = heat_request(self,
-                           'stacks/%s/%s/snapshots/%s' %(stack_name, stack_id, snapshot_id),
+                           'stacks/%s/%s/snapshots/%s/restore' %(stack_name, stack_id, snapshot_id),
                            'post',
                            'heat_restore_snapshot',
                            locust_name='stacks/[name]/[id]/snapshots/[restore_snapshot]')

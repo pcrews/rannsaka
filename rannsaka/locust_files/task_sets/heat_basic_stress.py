@@ -25,9 +25,6 @@ class HeatBasicStress(baseTaskSet):
         self.server_count = 0
         self.stack_count = 0 
         self.snapshot_count = 0
-        # limit list to less core / disk-intensive flavors in general
-        self.flavor_list = [42,42,84,84,451]
-        self.auth_token, self.tenant_id, self.service_catalog = keystone_base.get_auth_token(self)
 
     tasks = {heat_base.list_stacks:5,
              heat_base.find_stack:5,
@@ -40,10 +37,10 @@ class HeatBasicStress(baseTaskSet):
              heat_base.list_stack_resources:4,
              heat_base.get_stack_template:7,
              heat_base.list_resource_types:7,
-             heat_base.suspend_stack:3,
-             heat_base.resume_stack:7,
+             #heat_base.suspend_stack:3,
+             #heat_base.resume_stack:7,
              heat_base.create_snapshot:5,
              heat_base.delete_snapshot:2,
-             heat_base.restore_snapshot:1,
+             heat_base.restore_snapshot:7,
              nova_util.refresh_auth_token:1
             } 
