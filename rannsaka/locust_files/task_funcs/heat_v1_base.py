@@ -210,12 +210,13 @@ def create_snapshot(self,
                     name=None,
                     force=False,
                     description=None):
+    # TODO: don't set name unless passed as param
     if not name:
         name = "stack-snapshot-%s" % uuid.uuid4()
+    data = {  "name": name,
+           } 
     if not stack_name:
         stack_name, stack_id = get_stack_name_and_id(self)
-        data = {  "name": name,
-               }  
     response = heat_request(self,
                            'stacks/%s/%s/snapshots' %(stack_name, stack_id),
                             'post',
@@ -250,7 +251,7 @@ def restore_snapshot(self,
                   force=False,
                   description=None):
     if stack_name:
-       snapshot_id = get_snapshot_id(stack_name=stack_name)
+       snapshot_id = get_snapshot_id(self, stack_name=stack_name)
     if not snapshot_id:
         snapshot_id, stack_name, stack_id = get_snapshot_id(self)
     response = heat_request(self,
@@ -262,84 +263,109 @@ def restore_snapshot(self,
 
 
 
-def resize_server(self, server_id, flavor_id=None):
-    data = {
-           "resize": {
-                     "flavorRef": flavor_id
-                     }
-           }
-    heat_request(self,
-                'servers/%s/action' % server_id,
-                'post',
-                'heat_resize_server',
-                data,
-                locust_name='servers/[resize]/[id]')
+def abandon_stack(self,
+                 stack_name=None,
+                 stack_id=None):
+    if not stack_name:
+        stack_name, stack_id = get_stack_name_and_id(self)
+    response = heat_request(self,
+                            'stacks/%s/%s/abandon' % (stack_name, stack_id),
+                            'delete',
+                            'heat_abandon_stack',
+                            locust_name='stacks/[name]/[id]/abandon')
+    return response
 
 
-def confirm_resize_server(self, server_id):
-    data = { "confirmResize": None }
-    return heat_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'heat_confirm_resize_server',
-                       data,
-                       locust_name='servers/[confirm_resize]/[id]')
+def adopt_stack(self,
+               stack_name=None,
+               template=None,
+               template_url=None,
+               timeout_mins=None,
+               adopt_stack_data=None):
+    if not stack_name:
+        # generate one
+        stack_name = 'test-stack-%s-%s' %(self.id, self.stack_count)
+        self.stack_count += 1
+    # TODO: generate other params if needed
+    data = {'stack_name': stack_name,
+            'template_url': template_url,
+            'timeout_mins': timeout_mins,
+            'adopt_stack_data': adopt_stack_data}
+    if template:
+        data['template'] = template
+    response = heat_request(self,
+                           'stacks',
+                           'post',
+                           'heat_adopt_stack',
+                           data,
+                           locust_name='stacks/[adopt_stack]')
+    return response
 
 
-def revert_resize_server(self, server_id):
-    data = { "revertResize": None }
-    return heat_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'heat_resize_server',
-                       data,
-                       locust_name='servers/[revert_resize]/[id]')
+def create_stack(self,
+                 stack_name=None,
+                 template=None,
+                 template_url=None,
+                 timeout_mins=None,
+                 disable_rollback=True,
+                 params=None):
+    if not stack_name:
+        # generate one
+        stack_name = 'test-stack-%s-%s' %(self.id, self.stack_count)
+        self.stack_count += 1
+    # TODO: generate other params if needed
+    data = {'stack_name': stack_name,
+            'template_url': template_url,
+            'timeout_mins': timeout_mins,
+            'parameters' : params,
+            'disable_rollback': disable_rollback}
+    if template:
+        data['template'] = template
+    response = heat_request(self,
+                           'stacks',
+                           'post',
+                           'heat_create_stack',
+                           data,
+                           locust_name='stacks/[create_stack]')
+    return response
 
 
-def suspend_server(self, server_id):
-    data = { "suspend": None }
-    return heat_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'heat_suspend_server',
-                       data,
-                       locust_name='servers/[suspend]/[id]')
+def delete_stack(self,
+                 stack_name=None,
+                 stack_id=None):
+    if not stack_name:
+        stack_name, stack_id = get_stack_name_and_id(self)
+    response = heat_request(self,
+                            'stacks/%s/%s' % (stack_name, stack_id),
+                            'delete',
+                            'heat_delete_stack',
+                            locust_name='stacks/[name]/[id]')
 
 
-def resume_server(self, server_id):
-    data = { "resume": None }
-    return heat_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'heat_resume_server',
-                       data,
-                       locust_name='servers/[resume]/[id]')
-
-
-def update_server_metadata(self, server_id=None, metadata=None):
-    if not server_id:
-        server_id = get_server_id(self)
-    if not metadata:
-        metadata = get_test_metadata(self)
-    data = {"metadata":metadata}
-    return heat_request(self,
-                       'servers/%s/metadata' % server_id,
-                       'post',
-                       'heat_update_server_metadata',
-                       data,
-                       locust_name='servers/[id]/metadata')
-
-
-def overwrite_server_metadata(self, server_id=None, metadata=None):
-    if not server_id:
-        server_id = get_server_id(self)
-    if not metadata:
-        metadata = get_test_metadata(self)
-    data = {"metadata":metadata}
-    return heat_request(self,
-                       'servers/%s/metadata' % server_id,
-                       'put',
-                       'heat_overwrite_server_metadata',
-                       data,
-                       locust_name='servers/[id]/metadata')
+def update_stack(self,
+                 stack_name=None,
+                 stack_id=None,
+                 template=None,
+                 template_url=None,
+                 timeout_mins=None,
+                 disable_rollback=True,
+                 params=None):
+    if not stack_name:
+        # get one
+        stack_name, stack_id = get_stack_name_and_id(self)
+    # TODO: generate other params if needed
+    data = {'stack_name': stack_name,
+            'template_url': template_url,
+            'timeout_mins': timeout_mins,
+            'parameters' : params,
+            'disable_rollback': disable_rollback}
+    if template:
+        data['template'] = template
+    response = heat_request(self,
+                           'stacks/%s/%s' % (stack_name, stack_id),
+                           'put',
+                           'heat_update_stack',
+                           data,
+                           locust_name='stacks/[stack_name]/[stack_id]/[update_stack]')
+    return response
 

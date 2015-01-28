@@ -33,6 +33,7 @@ def churn_server_pool(self):
         nova_base.create_server(self,
                                flavor_id = flavor_id,
                                name="server-%s-%s" % (self.id, self.server_count))
+        self.server_count += 1
     elif len(servers) >= self.max_server_count:
         server_id = nova_base.get_server_id(self)
         nova_base.delete_server(self, server_id)
@@ -74,3 +75,11 @@ def assign_and_remove_vip(self):
     nova_base.remove_floating_ip(self,
                                 server_id = server_id,
                                 floating_ip = floating_ip)
+
+
+def create_server_image(self):
+    server_id = nova_base.get_server_id(self)
+    image_name = "image-%s-%s-%s" % (self.id, server_id, self.image_count)
+    result = nova_base.create_server_image(self, server_id=server_id, name=image_name)
+    self.image_count += 1
+

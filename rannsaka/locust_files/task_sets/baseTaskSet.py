@@ -48,6 +48,11 @@ class baseTaskSet(TaskSet):
         return config.get(section, key_name)
 
 
+    def get_file_contents(self, file_path=None):
+        with open(file_path, 'r') as infile:
+            return infile.read()
+
+
     def output(self,output_data):
         print "%s: %s" % (self.id, output_data)
 
