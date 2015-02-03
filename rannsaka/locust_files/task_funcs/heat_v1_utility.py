@@ -1,3 +1,4 @@
+import difflib
 import os
 import random
 import time
@@ -118,13 +119,36 @@ def update_stack(self):
     disable_rollback=False
 
     # create the stack
+    self.output("UPDATE: stack: %s | params: %s" % (stack_name, params))
     response = heat_base.update_stack(self,
+                                      stack_name=stack_name,
+                                      stack_id=stack_id,
                                       template=template_data,
                                       params=params,
                                       disable_rollback=disable_rollback,
                                       timeout_mins=timeout_mins)
-    return response
+    # further tests if an accepted update
+    if response.status_code != 409:
+        time.sleep(10)
+        # scan stack details to see if we have a bleed-over in params
+        stack_data = heat_base.list_stack_detail(self,
+                                                 stack_name=stack_name,
+                                                 stack_id=stack_id)
+        stack_params = json.loads(stack_data.content)['stack']['parameters']
+        # compare params, we use input as 'standard' and expect to find
+        # each key/value we sent in the return params
+        error = False
+        for in_key, in_value in params.items():
+            if in_key not in stack_params:
+                error = True
+                self.output("ERROR: input param mismatch: key %s not in returned params.  expected value: %s || params: %s" % (in_key, in_value, stack_params))
+            elif params[in_key] != stack_params[in_key]:
+                error = True
+                self.output("ERROR: param value mismatch: key: %s || expected: %s || actual: %s" %(in_key, in_value, stack_params[in_key]))
+        if error:
+            self.output("@"*80)
 
+    return response
 
 
 def churn_stack_pool(self):
@@ -141,4 +165,3 @@ def churn_stack_pool(self):
         create_stack(self)
     elif len(stacks) >= self.max_stack_count:
         heat_base.delete_stack(self)
-

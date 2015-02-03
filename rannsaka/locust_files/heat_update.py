@@ -25,7 +25,8 @@ class HeatCreateDelete(baseTaskSet):
         self.min_stack_count = 9 
         self.max_stack_count = 15 
         # limit list to less core / disk-intensive flavors in general
-        self.flavor_list = [42,42,84,84,451]
+        #self.flavor_list = [42,42,84,84,451]
+        self.flavor_list = ['m1.nano','m1.nano','m1.micro','m1.micro','m1.heat']
         self.heat_templates = ['locust_files/etc/heat_1vm_template.yml',
                                'locust_files/etc/heat_2vm_template.yml']
 
@@ -33,8 +34,8 @@ class HeatCreateDelete(baseTaskSet):
     tasks = {#heat_util.create_stack: 7,
              heat_util.update_stack: 4,
              #heat_base.delete_stack: 3,
-             heat_base.suspend_stack: 1,
-             heat_base.resume_stack: 3,
+             #heat_base.suspend_stack: 1,
+             #heat_base.resume_stack: 3,
              heat_base.list_stack_detail:3,
              heat_base.find_stack_events:2,
              heat_base.list_stack_events:7,
