@@ -96,18 +96,15 @@ def update_stack(self):
     template_data = self.get_file_contents(template_file)
 
     # params:
+    server_string='server'
     if self.one_in_ten():
-        if '1vm' in template_file:
-            params['instance1_name'] = '%s-newname-1' % (stack_name)
-        elif '2vm' in template_file:
-            params['instance1_name'] = '%s-newname-1' % (stack_name)
-            params['instance2_name'] = '%s-newname-2' % (stack_name)
-    else:
-        if '1vm' in template_file:
-            params['instance1_name'] = '%s-server-1' % (stack_name)
-        elif '2vm' in template_file:
-            params['instance1_name'] = '%s-server-1' % (stack_name)
-            params['instance2_name'] = '%s-server-2' % (stack_name)
+        server_string='newname'
+
+    if '1vm' in template_file:
+        params['instance1_name'] = '%s-%s-1' % (stack_name, server_string)
+    elif '2vm' in template_file:
+        params['instance1_name'] = '%s-%s-1' % (stack_name, server_string)
+        params['instance2_name'] = '%s-%s-2' % (stack_name, server_string)
 
     if self.one_in_five():
         params['flavor'] = random.choice(self.flavor_list)
