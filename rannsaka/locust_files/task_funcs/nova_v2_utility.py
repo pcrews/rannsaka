@@ -46,7 +46,10 @@ def resize_server(self):
     # limit new flavors to a smaller set of smaller flavors
     # this is to increase the success rate and to prevent the system getting
     # 'stuck' in a boring test state due to lack of test cores
-    flavor_id = random.choice([42,84,451,9998,9998,9998,9999,9999,9999])
+    if self.flavor_list:
+        flavor_id = random.choice(self.flavor_list)
+    else:
+        flavor_id = random.choice([42,42,42,84,84,451])
     #flavor_id = nova_base.get_flavor_id(self)
     self.output("Resize server | %s | %s " % (server_id, flavor_id))
     if server_id:

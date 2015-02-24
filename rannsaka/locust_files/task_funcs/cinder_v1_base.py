@@ -34,7 +34,7 @@ def cinder_request(self,
     return response
 
 
-def cinder_get_volume_id(self):
+def get_volume_id(self):
     """ Return a random volume from currently
         available volumes
     """
@@ -45,7 +45,7 @@ def cinder_get_volume_id(self):
     return volume_id
 
 
-def cinder_get_snapshot_id(self):
+def get_snapshot_id(self):
     """ Return a random snapshot from currently
         available snapshots
     """
@@ -56,7 +56,7 @@ def cinder_get_snapshot_id(self):
     return snapshot_id
 
 
-def cinder_get_image_id(self):
+def get_image_id(self):
     """ Return a random image from currently
         available images
     """
@@ -67,7 +67,7 @@ def cinder_get_image_id(self):
     return image_id
 
 
-def cinder_get_server_id(self):
+def get_server_id(self):
     response = nova_api.nova_request(self, 'servers', 'get')
     server_list = json.loads(response.content)['servers']
     server_id = random.choice([i['id'] for i in server_list])
@@ -90,7 +90,7 @@ def list_volumes_detail(self):
 
 def list_volume_detail(self, volume_id=None):
     if not volume_id:
-        volume_id = cinder_get_volume_id(self)
+        volume_id = get_volume_id(self)
     return cinder_request(self,
                          'volumes/%s' % volume_id,
                          'get',
@@ -119,7 +119,7 @@ def list_snapshots_detail(self):
 
 def list_snapshot_detail(self, snapshot_id=None):
     if not snapshot_id:
-        snapshot_id = cinder_get_snapshot_id(self)
+        snapshot_id = get_snapshot_id(self)
     return cinder_request(self,
                          'snapshots/%s' %snapshot_id,
                          'get',
@@ -145,7 +145,7 @@ def list_image_detail(self, image_id=None):
     if not image_id:
         # get available images and randomly
         # choose one
-        image_id = cinder_get_image_id(self) 
+        image_id = get_image_id(self)
     return cinder_request(self,
                        'images/%s' % image_id,
                        'get',
@@ -155,7 +155,7 @@ def list_image_detail(self, image_id=None):
 
 def list_image_metadata(self, image_id=None):
     if not image_id:
-        image_id = cinder_get_image_id(self)
+        image_id = get_image_id(self)
     return cinder_request(self,
                        'images/%s/metadata' % image_id,
                        'get',
@@ -165,9 +165,9 @@ def list_image_metadata(self, image_id=None):
 
 def update_image_metadata(self, image_id = None, metadata=None):
     if not image_id:
-        image_id = cinder_get_image_id(self)
+        image_id = get_image_id(self)
     if not metadata:
-        metadata = cinder_get_test_metadata(self)
+        metadata = get_test_metadata(self)
     data = {"metadata":metadata}
     return cinder_request(self,
                        'images/%s/metadata' % image_id,
@@ -179,9 +179,9 @@ def update_image_metadata(self, image_id = None, metadata=None):
 
 def overwrite_image_metadata(self, image_id = None, metadata=None):
     if not image_id:
-        image_id = cinder_get_image_id(self)
+        image_id = get_image_id(self)
     if not metadata:
-        metadata = cinder_get_test_metadata(self)
+        metadata = get_test_metadata(self)
     data = {"metadata":metadata}
     return cinder_request(self,
                        'images/%s/metadata' % image_id,
@@ -260,168 +260,5 @@ def delete_snapshot(self, snapshot_id):
                   'delete',
                   'cinder_delete_snapshot',
                   locust_name='volumes/[id]')
-
-
-def resize_server(self, server_id, flavor_id=None):
-    data = {
-           "resize": {
-                     "flavorRef": flavor_id
-                     }
-           }
-    cinder_request(self,
-                'servers/%s/action' % server_id,
-                'post',
-                'cinder_resize_server',
-                data,
-                locust_name='servers/[resize]/[id]')
-
-
-def confirm_resize_server(self, server_id):
-    data = { "confirmResize": None }
-    return cinder_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'cinder_confirm_resize_server',
-                       data,
-                       locust_name='servers/[confirm_resize]/[id]')
-
-
-def revert_resize_server(self, server_id):
-    data = { "revertResize": None }
-    return cinder_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'cinder_resize_server',
-                       data,
-                       locust_name='servers/[revert_resize]/[id]')
-
-
-def suspend_server(self, server_id):
-    data = { "suspend": None }
-    return cinder_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'cinder_suspend_server',
-                       data,
-                       locust_name='servers/[suspend]/[id]')
-
-
-def resume_server(self, server_id):
-    data = { "resume": None }
-    return cinder_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'cinder_resume_server',
-                       data,
-                       locust_name='servers/[resume]/[id]')
-
-
-def update_server_metadata(self, server_id=None, metadata=None):
-    if not server_id:
-        server_id = cinder_get_server_id(self)
-    if not metadata:
-        metadata = cinder_get_test_metadata(self)
-    data = {"metadata":metadata}
-    return cinder_request(self,
-                       'servers/%s/metadata' % server_id,
-                       'post',
-                       'cinder_update_server_metadata',
-                       data,
-                       locust_name='servers/[id]/metadata')
-
-
-def overwrite_server_metadata(self, server_id=None, metadata=None):
-    if not server_id:
-        server_id = cinder_get_server_id(self)
-    if not metadata:
-        metadata = cinder_get_test_metadata(self)
-    data = {"metadata":metadata}
-    return cinder_request(self,
-                       'servers/%s/metadata' % server_id,
-                       'put',
-                       'cinder_overwrite_server_metadata',
-                       data,
-                       locust_name='servers/[id]/metadata')
-
-
-def list_flavors(self):
-    return cinder_request(self,
-                       'flavors',
-                       'get',
-                       'cinder_list_flavors')
-
-
-def create_flavor(self, name=None,
-                 ram=128,
-                 vcpus=1,
-                 disk=0,
-                 id='auto',
-                 is_public=False):
-    data = {
-           "flavor": {
-                     "name": name,
-                     "ram": ram,
-                     "vcpus": vcpus,
-                     "disk": disk,
-                     "id": id,
-                     "os-flavor-access:is_public": is_public 
-                     }
-          }
-    return cinder_request(self,
-                       'flavors',
-                       'post',
-                       'cinder_create_flavor',
-                       data)
-
-
-def create_floating_ip(self, pool=None):
-    data = {}
-    if pool:
-        data['pool']= pool
-    return cinder_request(self,
-                       'os-floating-ips',
-                       'post',
-                       'cinder_create_floating_ip',
-                       data)
-
-
-def delete_floating_ip(self, floating_ip_id=None):
-    if not floating_ip_id:
-        floating_ip_id = cinder_get_floating_ip_id(self)
-    return cinder_request(self,
-                       'os-floating-ips/%s' % floating_ip_id,
-                       'delete',
-                       'cinder_delete_floating_ip',
-                       locust_name='os-floating-ips/[floating-ip-id]') 
-
-
-def list_floating_ips(self):
-    return cinder_request(self,
-                        'os-floating-ips',
-                        'get',
-                        'cinder_list_floating_ips')
-
-
-def assign_floating_ip(self,
-                       server_id=None,
-                       floating_ip=None,
-                       pool=None):
-    if not server_id:
-        server_id = cinder_get_server_id(self)
-    if not floating_ip:
-        floating_ip = cinder_get_floating_ip(self)
-    data = {
-           "addFloatingIp": {
-                            "address": floating_ip 
-                            }
-           }
-    if pool:
-        data['addFloatingIp']['pool']=pool
-    return cinder_request(self,
-                       'servers/%s/action' % server_id,
-                       'post',
-                       'cinder_assign_floating_ip',
-                       data,
-                       locust_name='servers/[server_id]/[assign-floating-ip]')
 
 

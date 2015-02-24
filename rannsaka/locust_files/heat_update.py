@@ -34,8 +34,8 @@ class HeatCreateDelete(baseTaskSet):
     tasks = {#heat_util.create_stack: 7,
              heat_util.update_stack: 4,
              #heat_base.delete_stack: 3,
-             #heat_base.suspend_stack: 1,
-             #heat_base.resume_stack: 3,
+             heat_base.suspend_stack: 1,
+             heat_base.resume_stack: 3,
              heat_base.list_stack_detail:3,
              heat_base.find_stack_events:2,
              heat_base.list_stack_events:7,
@@ -44,13 +44,16 @@ class HeatCreateDelete(baseTaskSet):
              #heat_base.find_stack_resources:7,
              heat_base.list_stack_resources:4,
              heat_base.get_stack_template:3,
+             #heat_base.create_snapshot:2,
+             #heat_base.delete_snapshot:1,
+             #heat_base.restore_snapshot:4,
              nova_util.refresh_auth_token:1
             } 
 
 class HeatUser(HttpLocust):
     task_set = HeatCreateDelete  
     min_wait=500
-    max_wait=5000
+    max_wait=3000
 
 
 

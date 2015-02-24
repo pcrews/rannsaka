@@ -97,8 +97,9 @@ def update_stack(self):
 
     # params:
     server_string='server'
+
     if self.one_in_ten():
-        server_string='newname'
+          server_string='newname'
 
     if '1vm' in template_file:
         params['instance1_name'] = '%s-%s-1' % (stack_name, server_string)
@@ -112,11 +113,10 @@ def update_stack(self):
     # disable rollback
     if self.one_in_ten():
         disable_rollback=False
-    # set disable_rollback = False for testing
-    disable_rollback=False
 
     # create the stack
-    self.output("UPDATE: stack: %s | params: %s" % (stack_name, params))
+    self.output("UPDATE: stack: %s | params: %s | disable_rollback: %s" % (stack_name, params, disable_rollback))
+    self.output("#"*80)
     response = heat_base.update_stack(self,
                                       stack_name=stack_name,
                                       stack_id=stack_id,
@@ -134,6 +134,7 @@ def update_stack(self):
         stack_params = json.loads(stack_data.content)['stack']['parameters']
         # compare params, we use input as 'standard' and expect to find
         # each key/value we sent in the return params
+        # NOTE: we don't currently account for rollbacks which are fine = some false positive reporting
         error = False
         for in_key, in_value in params.items():
             if in_key not in stack_params:

@@ -88,7 +88,7 @@ def get_floating_ip_id(self):
     return floating_ip_id
 
 
-def nova_get_attachment_id(self, server_id=None):
+def get_attachment_id(self, server_id=None):
     if not server_id:
         server_id = get_server_id(self)
     response = nova_request(self,
@@ -100,7 +100,7 @@ def nova_get_attachment_id(self, server_id=None):
     return attachment_id 
 
 
-def nova_get_test_metadata(self):
+def get_test_metadata(self):
     """ TODO - allow flag + image_id
         if received, then get actual
         metadata (?)
@@ -156,7 +156,7 @@ def list_flavors(self):
 
 
 def list_flavors_detail(self):
-    return nova_get_request(self, 'flavors/detail')
+    return get_request(self, 'flavors/detail')
 
 
 def list_flavor_detail(self, flavor_id=None):
@@ -216,7 +216,7 @@ def update_image_metadata(self, image_id = None, metadata=None):
     if not image_id:
         image_id = get_image_id(self)
     if not metadata:
-        metadata = nova_get_test_metadata(self)
+        metadata = get_test_metadata(self)
     data = {"metadata":metadata}
     return nova_request(self,
                        'images/%s/metadata' % image_id,
@@ -230,7 +230,7 @@ def overwrite_image_metadata(self, image_id = None, metadata=None):
     if not image_id:
         image_id = get_image_id(self)
     if not metadata:
-        metadata = nova_get_test_metadata(self)
+        metadata = get_test_metadata(self)
     data = {"metadata":metadata}
     return nova_request(self,
                        'images/%s/metadata' % image_id,
@@ -397,7 +397,7 @@ def update_server_metadata(self, server_id=None, metadata=None):
     if not server_id:
         server_id = get_server_id(self)
     if not metadata:
-        metadata = nova_get_test_metadata(self)
+        metadata = get_test_metadata(self)
     data = {"metadata":metadata}
     return nova_request(self,
                        'servers/%s/metadata' % server_id,
@@ -411,7 +411,7 @@ def overwrite_server_metadata(self, server_id=None, metadata=None):
     if not server_id:
         server_id = get_server_id(self)
     if not metadata:
-        metadata = nova_get_test_metadata(self)
+        metadata = get_test_metadata(self)
     data = {"metadata":metadata}
     return nova_request(self,
                        'servers/%s/metadata' % server_id,
@@ -557,7 +557,7 @@ def attach_volume(self,
     if not server_id:
         server_id = get_server_id(self)
     if not volume_id:
-        volume_id = cinder_api.cinder_get_volume_id(self)
+        volume_id = cinder_api.get_volume_id(self)
     data = { "volumeAttachment": {
                                  "volumeId": volume_id,
                                  "device": device_path
@@ -577,7 +577,7 @@ def remove_volume(self,
     if not server_id:
         server_id = get_server_id(self)
     if not attachment_id:
-        attachment_id = nova_get_attachment_id(self, server_id)
+        attachment_id = get_attachment_id(self, server_id)
     return nova_request(self,
                        'servers/%s/os-volume_attachments/%s' % (server_id, attachment_id),
                        'delete',
