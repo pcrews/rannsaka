@@ -305,7 +305,9 @@ def create_server_image(self, server_id, name=None, metadata=None):
                 locust_name='servers/[create_image]/[id]')
 
 
-def reboot_server(self, server_id):
+def reboot_server(self, server_id=None):
+    if not server_id:
+        server_id = get_server_id(self)
     data = {
            "reboot": {
                      "type": "SOFT"
