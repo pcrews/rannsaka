@@ -102,7 +102,7 @@ class UserBehavior(baseTaskSet):
         reboot_server(self, server_id)
         time.sleep(random.choice([1,1,1,1,3,3,3,5,10,25]))
 
-    #@task(1)
+    @task(1)
     def nova_delete_server(self):
         server_id = nova_get_server_id(self)
         delete_server(self, server_id)
