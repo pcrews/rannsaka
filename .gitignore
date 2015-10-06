@@ -16,6 +16,7 @@ eggs/
 #lib/
 lib64/
 parts/
+rannsaka/work/*
 sdist/
 var/
 *.egg-info/
@@ -52,6 +53,9 @@ docs/_build/
 
 # PyBuilder
 target/
+<<<<<<< HEAD
 
 # tool-specific
 work/locust_common.yml
+=======
+>>>>>>> 973d351b1d873889345fcb9b44a846fc66fbe7ef
